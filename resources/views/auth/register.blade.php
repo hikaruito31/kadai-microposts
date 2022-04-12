@@ -11,19 +11,19 @@
             {!! Form::open(['route'=>'signup.post']) !!}
                 <div class='form-group'>
                     {!! Form::label('name','NAME') !!}
-                    {!! Form::text('name',null,['class'=>'form-control'] !!}
+                    {!! Form::text('name',null,['class'=>'form-control']) !!}
                 </div>
                 <div class='form-group'>
                     {!! Form::label('email','Email') !!}
-                    {!! Form::email('email',null,['class'=>'form-control'] !!}
+                    {!! Form::email('email',null,['class'=>'form-control']) !!}
                 </div>
                 <div class='form-group'>
                     {!! Form::label('password','Password') !!}
-                    {!! Form::password('password',['class'=>'form-control'] !!}
+                    {!! Form::password('password',['class'=>'form-control']) !!}
                 </div>
                 <div class='form-group'>
                     {!! Form::label('password_confirmation','Confirmation') !!}
-                    {!! Form::password('password_confirmation',['class'=>'form-control'] !!}
+                    {!! Form::password('password_confirmation',['class'=>'form-control']) !!}
                 </div>
                 
                 {!! Form::submit('Sign up',['class'=>'btn btn-primary btn-block']) !!}
