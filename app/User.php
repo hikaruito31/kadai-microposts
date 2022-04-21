@@ -46,11 +46,78 @@ class User extends Authenticatable
             return $this->hasMany(Micropost::class);
         }
         
+    public function followings()
+        {
+            return $this->belongsToMany(User::class,'user_follow','user_id','follow_id')->withTimestamps();
+        }
+    
+    public function followers()
+        {
+            return $this->belongsToMany(User::class,'user_follow','follow_id','user_id')->withTimestamps();
+        }
+    
+    /**
+     * $useridで指定されたユーザをフォローする
+     * 
+     * @param int $userid
+     * @return bool
+    */
+    public function follow($userId)
+        {
+            //すでにフォローしているかどうか
+            $exist = $this->is_following($userId);
+            //対象が自分自身かどうか
+            $its_me = $this->id == $userId;
+            
+            if($exist||$its_me){
+                //フォロー済みまたは自分自身の場合は何もしない
+                return false;
+            }else{
+                //上記以外はフォローする
+                $this->followings()->attach($userId);
+                return true;
+            }
+        }
+    
+    /**
+     * $userIdで指定されたユーザをアンフォローする
+     * 
+     * @param int $userId
+     * @return bool
+     */
+    public function unfollow($userId)
+    {
+        //すでにフォローしているか
+        $exist = $this->is_following($userId);
+        //対象が自分自身かどうか
+        $its_me = $this->id == $userId;
+        
+        if($exist && !$its_me){
+            //フォロー済みかつ自分自身でない場合はフォローを外す
+            $this->followings()->detach($userId);
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
+    /**
+     * 指定された $userIdのユーザをこのユーザがフォロー中であるか調べる。フォロー中ならtrueを返す。
+     *
+     * @param  int  $userId
+     * @return bool
+     */
+    public function is_following($userId)
+    {
+        //フォロー中ユーザの中に$userIdのものが存在するか
+        return $this->followings()->where('follow_id',$userId)->exists();
+    }
+    
     /**
      *このユーザに関係するモデルの件数をロードする。 
     */
     public function loadRelationshipCounts()
         {
-            $this->loadCount('microposts');
+            $this->loadCount(['microposts','followings','followers']);
         }
 }
